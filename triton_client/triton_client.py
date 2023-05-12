@@ -15,22 +15,21 @@
 # limitations under the License.
 #
 
+import cv2
 import numpy as np
-from torchvision import transforms
-from PIL import Image
 import tritonclient.http as httpclient
 from tritonclient.utils import triton_to_np_dtype
 
 def rn50_preprocess(img_path="img1.jpg"):
-    img = Image.open(img_path)
-    preprocess = transforms.Compose([
-        transforms.Resize(256),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-    return preprocess(img).numpy()
-
+    img = cv2.imread(img_path)
+    img = img[:,:,::-1]
+    img = cv2.resize(img, (224, 224))    
+    img = img / 255.0    
+    img = (img - 0.449) / 0.226   
+    img = img.transpose([2, 0, 1])
+    
+    return img.astype(np.float32)
+    
 transformed_img = rn50_preprocess()
 
 # Setup a connection with the Triton Inference Server.

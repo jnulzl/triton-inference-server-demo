@@ -133,7 +133,7 @@ model_repository
 
 ```shell
 #安装依赖
-pip install torchvision
+pip install opencv-python
 pip install attrdict
 pip install nvidia-pyindex
 pip install geventhttpclient
